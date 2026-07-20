@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Campanhas de Incentivo — Time de Vendas HapON</title>
+<style>
+  :root{
+    --navy:#0A2E5C; --navy2:#113D73; --azul:#0054A6; --laranja:#F26522;
+    --light:#F2F6FB; --ice:#CADCFC; --dark:#1A2B45; --muted:#5A6B82;
+    --osoft:#FDECE2; --verde:#1E8E3E;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Calibri,Arial,sans-serif}
+  body{background:#0b1f3d;overflow:hidden;height:100vh}
+
+  /* ---- login gate ---- */
+  #gate{position:fixed;inset:0;background:linear-gradient(135deg,#0f2d52,#185FA5);display:flex;align-items:center;justify-content:center;z-index:99}
+  .gate-box{background:#fff;border-radius:14px;padding:44px 40px;width:100%;max-width:380px;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.25)}
+  .gate-box h2{color:var(--navy);font-size:20px;margin-bottom:6px}
+  .gate-box p{color:var(--muted);font-size:13px;margin-bottom:20px}
+  .gate-box input{width:100%;padding:11px 14px;border:1px solid #d6dee8;border-radius:8px;font-size:14px;margin-bottom:12px}
+  .gate-box button{width:100%;padding:11px;border:none;border-radius:8px;background:var(--laranja);color:#fff;font-size:14px;font-weight:700;cursor:pointer}
+  .gate-box button:hover{background:#d8541a}
+  .gate-err{color:#c0392b;font-size:12px;margin-top:10px;min-height:16px}
+
+  /* ---- stage / scaling ---- */
+  #stage-wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+  #stage{width:1280px;height:720px;position:relative;transform-origin:center center}
+  .slide{position:absolute;inset:0;background:#fff;display:none;overflow:hidden}
+  .slide.on{display:block}
+  .slide.navy{background:var(--navy)}
+
+  /* ---- chrome ---- */
+  #nav{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:flex;gap:10px;align-items:center;z-index:50}
+  #nav button{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);color:#fff;width:42px;height:42px;border-radius:50%;font-size:18px;cursor:pointer;transition:.15s}
+  #nav button:hover{background:var(--laranja);border-color:var(--laranja)}
+  #counter{color:#fff;font-size:13px;font-weight:600;opacity:.85;min-width:56px;text-align:center}
+  #back-hub{position:fixed;top:14px;left:16px;z-index:50;color:#fff;font-size:12px;font-weight:600;text-decoration:none;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);padding:7px 14px;border-radius:20px}
+  #back-hub:hover{background:var(--laranja);border-color:var(--laranja)}
+
+  /* ---- shared pieces ---- */
+  .kicker{font-size:15px;font-weight:800;letter-spacing:.08em;color:var(--laranja);text-transform:uppercase}
+  .h1{font-size:38px;font-weight:800;color:var(--dark);margin-top:4px}
+  .pad{padding:44px 58px}
+  .card{background:var(--light);border-radius:14px}
+  .wcard{background:#fff;border-radius:10px}
+  .ncard{background:var(--navy);border-radius:14px}
+  .n2card{background:var(--navy2);border-radius:14px}
+  .ocard{background:var(--osoft);border-radius:14px}
+  .circ{border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;flex-shrink:0}
+  .muted{color:var(--muted)}
+  table.tbl{border-collapse:collapse;width:100%;font-size:14px}
+  .tbl th{background:var(--azul);color:#fff;font-weight:700;padding:9px 12px;text-align:center}
+  .tbl td{padding:8px 12px;color:var(--dark);text-align:center;border-bottom:1px solid #e8eef6}
+  .tbl td:first-child{text-align:left}
+  .tbl tr:nth-child(even) td{background:var(--light)}
+  .tbl-cap{font-size:14px;font-weight:800;color:var(--azul);margin-bottom:8px}
+  .big-o{color:var(--laranja);font-weight:800}
+  .big-b{color:var(--azul);font-weight:800}
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="gate-box">
+    <h2>Campanhas de Incentivo HapON</h2>
+    <p>Canal Venda Direta — acesso restrito</p>
+    <input type="password" id="gate-input" placeholder="Digite a senha" onkeydown="if(event.key==='Enter')checkGate()">
+    <button onclick="checkGate()">Entrar</button>
+    <div class="gate-err" id="gate-err"></div>
+  </div>
+</div>
+
+<a id="back-hub" href="https://hapvida-hub.vercel.app" target="_blank">← Hub Estratégico</a>
+
+<div id="stage-wrap"><div id="stage">
+
+<!-- SLIDE 1 — CAPA -->
+<section class="slide navy on">
+  <div style="position:absolute;right:-90px;top:-120px;width:400px;height:400px;border-radius:50%;background:var(--azul)"></div>
+  <div style="position:absolute;right:-40px;top:90px;width:210px;height:210px;border-radius:50%;background:var(--laranja)"></div>
+  <div style="position:absolute;left:-130px;bottom:-140px;width:330px;height:330px;border-radius:50%;background:var(--azul)"></div>
+  <div style="position:absolute;left:150px;bottom:-60px;width:125px;height:125px;border-radius:50%;background:var(--laranja)"></div>
+  <div style="position:relative;padding:180px 90px 0">
+    <div class="kicker">Hapvida &nbsp;•&nbsp; Canal Venda Direta</div>
+    <h1 style="font-size:64px;color:#fff;font-weight:800;margin-top:14px">Campanhas de Incentivo</h1>
+    <h2 style="font-size:44px;color:var(--ice);font-weight:800">Time de Vendas HapON</h2>
+    <p style="color:var(--ice);font-size:19px;margin-top:36px;max-width:900px">Comissionamento, campanhas semanais, metas e premiações — <b style="color:#fff">tudo o que você pode ganhar vendendo pelo Contrate Online.</b></p>
+    <p style="color:var(--ice);font-size:14px;margin-top:70px">Vigência 2026 &nbsp;•&nbsp; Diretoria de Vendas Digital</p>
+  </div>
+</section>
+
+<!-- SLIDE 2 — VISÃO GERAL -->
+<section class="slide">
+  <div class="pad">
+    <div class="kicker">Como funciona</div>
+    <div class="h1">Um programa, várias formas de ganhar</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:28px">
+      <div class="card" style="padding:24px">
+        <div class="circ" style="width:56px;height:56px;background:var(--azul);font-size:22px">◎</div>
+        <div style="font-weight:800;color:var(--dark);font-size:18px;margin:16px 0 8px">Objetivo</div>
+        <div class="muted" style="font-size:13.5px;line-height:1.45">Definir as regras de acompanhamento e atingimento de metas do canal Venda Direta, premiando performance.</div>
+      </div>
+      <div class="card" style="padding:24px">
+        <div class="circ" style="width:56px;height:56px;background:var(--laranja);font-size:22px">★</div>
+        <div style="font-weight:800;color:var(--dark);font-size:18px;margin:16px 0 8px">Quem participa</div>
+        <div class="muted" style="font-size:13.5px;line-height:1.45">Colaboradores do Comercial Venda Direta: promotores, supervisores, gerentes, analistas, apoios e executivos.</div>
+      </div>
+      <div class="card" style="padding:24px">
+        <div class="circ" style="width:56px;height:56px;background:var(--azul);font-size:22px">✓</div>
+        <div style="font-weight:800;color:var(--dark);font-size:18px;margin:16px 0 8px">O que conta</div>
+        <div class="muted" style="font-size:13.5px;line-height:1.45">Vendas pelo Contrate Online — Individual/Familiar, Super Simples, PME e Administradora — e indicações do Quem Indica.</div>
+      </div>
+      <div class="card" style="padding:24px">
+        <div class="circ" style="width:56px;height:56px;background:var(--laranja);font-size:22px">$</div>
+        <div style="font-weight:800;color:var(--dark);font-size:18px;margin:16px 0 8px">Como você recebe</div>
+        <div class="muted" style="font-size:13.5px;line-height:1.45">Comissões pagas em folha via RH; campanhas de incentivo pagas via Inovah, conforme o ciclo de cada campanha.</div>
+      </div>
+    </div>
+    <div class="ncard" style="margin-top:22px;padding:22px 30px;display:flex;align-items:center;gap:26px">
+      <div>
+        <div style="color:#fff;font-weight:800;font-size:17px">Canais de venda</div>
+        <div style="color:var(--ice);font-size:12.5px">Onde o lead vira contrato</div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <span style="background:var(--azul);color:#fff;font-size:12.5px;font-weight:700;padding:9px 16px;border-radius:8px">Site Contrate Online</span>
+        <span style="background:var(--azul);color:#fff;font-size:12.5px;font-weight:700;padding:9px 16px;border-radius:8px">Chat de Vendas Online</span>
+        <span style="background:var(--azul);color:#fff;font-size:12.5px;font-weight:700;padding:9px 16px;border-radius:8px">Televendas 0800 777 9070</span>
+        <span style="background:var(--azul);color:#fff;font-size:12.5px;font-weight:700;padding:9px 16px;border-radius:8px">WhatsApp</span>
+        <span style="background:var(--azul);color:#fff;font-size:12.5px;font-weight:700;padding:9px 16px;border-radius:8px">Quem Indica</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 3 — COMISSIONAMENTO -->
+<section class="slide">
+  <div class="pad">
+    <div class="kicker">Comissionamento</div>
+    <div class="h1">Quanto mais vidas, maior o valor por vida</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:24px">
+      <div>
+        <div class="tbl-cap">PROMOTORES — valor por vida implantada</div>
+        <table class="tbl">
+          <tr><th style="text-align:left">Faixa de vidas</th><th>Valor por vida</th></tr>
+          <tr><td>De 01 a 29 vidas</td><td>R$ 5,00</td></tr>
+          <tr><td>De 30 a 49 vidas</td><td>R$ 10,00</td></tr>
+          <tr><td>De 50 a 59 vidas</td><td>R$ 15,00</td></tr>
+          <tr><td>De 60 a 99 vidas</td><td>R$ 25,00</td></tr>
+          <tr><td>A partir de 100 vidas</td><td>R$ 35,00</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="tbl-cap">SUPERVISOR COMERCIAL — por atingimento da meta*</div>
+        <table class="tbl">
+          <tr><th style="text-align:left">Atingimento da meta</th><th>Valor por vida</th></tr>
+          <tr><td>Até 50%</td><td>R$ 0,00</td></tr>
+          <tr><td>51% a 80%</td><td>R$ 3,00</td></tr>
+          <tr><td>81% a 89,9%</td><td>R$ 4,00</td></tr>
+          <tr><td>90% a 99,9%</td><td>R$ 5,00</td></tr>
+          <tr><td>A partir de 100%</td><td>R$ 8,00</td></tr>
+        </table>
+        <div class="muted" style="font-size:11.5px;font-style:italic;margin-top:8px">*Metas definidas individualmente para cada supervisor.</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-top:26px">
+      <div class="ocard" style="padding:22px 26px">
+        <div class="kicker" style="font-size:12px">Teto mensal</div>
+        <div style="font-size:42px;font-weight:800;color:var(--dark);margin:4px 0">R$ 12 mil</div>
+        <div class="muted" style="font-size:13px">Limite máximo de comissão por mês</div>
+      </div>
+      <div class="ocard" style="padding:22px 26px">
+        <div class="kicker" style="font-size:12px">Teto anual</div>
+        <div style="font-size:42px;font-weight:800;color:var(--dark);margin:4px 0">R$ 144 mil</div>
+        <div class="muted" style="font-size:13px">Limite máximo de comissão por ano</div>
+      </div>
+      <div class="ncard" style="padding:22px 26px">
+        <div class="kicker" style="font-size:12px">Ciclo de pagamento</div>
+        <div style="color:#fff;font-weight:700;font-size:15.5px;margin:6px 0;line-height:1.3">Vende no mês → apura no mês seguinte → recebe na folha do 2º mês.</div>
+        <div style="color:var(--ice);font-size:12px">Ex.: ranking de janeiro, apurado em fevereiro, pago em 01/03/2026.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 4 — CAMPANHA PLUS -->
+<section class="slide">
+  <div class="pad">
+    <div class="kicker">Campanha de incentivo</div>
+    <div class="h1">Campanha Plus — adicional por vida, individual e por equipe</div>
+    <div style="display:grid;grid-template-columns:1.9fr 1fr;gap:32px;margin-top:24px">
+      <table class="tbl">
+        <tr><th style="text-align:left">Range de vidas</th><th>Internos<br>Plus Individual</th><th>Internos<br>Plus Equipe</th><th>Promotores<br>Externos</th></tr>
+        <tr><td>De 01 a 19 vidas</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td>De 20 a 29 vidas</td><td>R$ 5,00</td><td>R$ 5,00</td><td>—</td></tr>
+        <tr><td>De 30 a 49 vidas</td><td>R$ 10,00</td><td>R$ 5,00</td><td>—</td></tr>
+        <tr><td>De 50 a 59 vidas</td><td>R$ 10,00</td><td>R$ 15,00</td><td>—</td></tr>
+        <tr><td>De 60 a 79 vidas</td><td>R$ 15,00</td><td>R$ 20,00</td><td>R$ 10,00</td></tr>
+        <tr><td>De 80 a 99 vidas</td><td>R$ 20,00</td><td>R$ 25,00</td><td>R$ 15,00</td></tr>
+        <tr><td>A partir de 100 vidas</td><td>R$ 25,00</td><td>R$ 25,00</td><td>R$ 20,00</td></tr>
+      </table>
+      <div class="card" style="padding:24px">
+        <div style="font-weight:800;color:var(--dark);font-size:18px;margin-bottom:14px">Regras do jogo</div>
+        <div style="display:flex;gap:10px;margin-bottom:14px"><div class="circ" style="width:24px;height:24px;background:var(--laranja);font-size:12px">✓</div><div style="font-size:13px;line-height:1.35"><b style="color:var(--dark)">Plus Individual</b> <span class="muted">— devido ao promotor que atingir a sua meta individual.</span></div></div>
+        <div style="display:flex;gap:10px;margin-bottom:14px"><div class="circ" style="width:24px;height:24px;background:var(--laranja);font-size:12px">✓</div><div style="font-size:13px;line-height:1.35"><b style="color:var(--dark)">Plus Equipe</b> <span class="muted">— devido ao promotor quando a equipe atingir a meta estabelecida.</span></div></div>
+        <div style="display:flex;gap:10px;margin-bottom:14px"><div class="circ" style="width:24px;height:24px;background:var(--laranja);font-size:12px">✓</div><div style="font-size:13px;line-height:1.35"><b style="color:var(--dark)">100+ vidas implantadas</b> <span class="muted">— o promotor acumula Plus Individual + Plus Equipe.</span></div></div>
+        <div style="display:flex;gap:10px"><div class="circ" style="width:24px;height:24px;background:var(--laranja);font-size:12px">✓</div><div style="font-size:13px;line-height:1.35"><b style="color:var(--dark)">Plus Parceiras</b> <span class="muted">— devido aos promotores das parceiras Benve, Nacional e Nova Seg que atingirem suas metas individuais.</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 5 — CAMPANHAS PROMOTOR -->
+<section class="slide">
+  <div class="pad">
+    <div class="kicker">Promotores</div>
+    <div class="h1">Três campanhas somam prêmios toda semana e todo mês</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px">
+      <div class="card" style="padding:22px">
+        <div style="display:flex;gap:12px;align-items:flex-start"><div class="circ" style="width:44px;height:44px;background:var(--azul);font-size:18px">1</div>
+          <div><div style="font-weight:800;color:var(--dark);font-size:16.5px">Semanal — Ranking</div><div class="muted" style="font-size:12px">Top 2 do ranking semanal de vendas (seg a dom)</div></div></div>
+        <div class="wcard" style="margin-top:16px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:13.5px;color:var(--dark)">1º lugar</span><span class="big-o" style="font-size:20px">R$ 500</span></div>
+        <div class="wcard" style="margin-top:9px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:13.5px;color:var(--dark)">2º lugar</span><span class="big-o" style="font-size:20px">R$ 400</span></div>
+        <div class="muted" style="font-size:11.5px;font-style:italic;margin-top:12px">Quem vence não participa da Campanha 2 na mesma semana.</div>
+      </div>
+      <div class="card" style="padding:22px">
+        <div style="display:flex;gap:12px;align-items:flex-start"><div class="circ" style="width:44px;height:44px;background:var(--azul);font-size:18px">2</div>
+          <div><div style="font-weight:800;color:var(--dark);font-size:16.5px">Semanal — Meta de vidas</div><div class="muted" style="font-size:12px">Atingiu a meta semanal? Prêmio garantido</div></div></div>
+        <div class="wcard" style="margin-top:16px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:13.5px;color:var(--dark)">20 a 24 vidas</span><span class="big-o" style="font-size:20px">R$ 200</span></div>
+        <div class="wcard" style="margin-top:9px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:13.5px;color:var(--dark)">25+ vidas</span><span class="big-o" style="font-size:20px">R$ 300</span></div>
+        <div class="muted" style="font-size:11.5px;font-style:italic;margin-top:12px">Mesmos critérios de apuração, desempate e SLA da Campanha 1.</div>
+      </div>
+      <div class="card" style="padding:22px">
+        <div style="display:flex;gap:12px;align-items:flex-start"><div class="circ" style="width:44px;height:44px;background:var(--azul);font-size:18px">3</div>
+          <div><div style="font-weight:800;color:var(--dark);font-size:16.5px">Mensal — Meta Promotor</div><div class="muted" style="font-size:12px">Adicional pelo volume do mês (data de vigência)</div></div></div>
+        <div class="wcard" style="margin-top:16px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:13.5px;color:var(--dark)">70 a 99 vidas</span><span class="big-o" style="font-size:20px">R$ 200</span></div>
+        <div class="wcard" style="margin-top:9px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:13.5px;color:var(--dark)">100+ vidas</span><span class="big-o" style="font-size:20px">R$ 300</span></div>
+        <div class="muted" style="font-size:11.5px;font-style:italic;margin-top:12px">Apuração pelas datas de cadastramento (vigência).</div>
+      </div>
+    </div>
+    <div class="ncard" style="margin-top:20px;padding:20px 26px;display:flex;align-items:center;gap:20px">
+      <div class="circ" style="width:56px;height:56px;background:var(--laranja);font-size:24px">⏱</div>
+      <div style="flex:1">
+        <div style="color:#fff;font-weight:800;font-size:16px">SLA de Primeiro Contato: até 2 minutos</div>
+        <div style="color:var(--ice);font-size:12px;line-height:1.35;margin-top:4px">O SLA define quanto do prêmio semanal você leva. Pagamento toda sexta-feira, referente à semana anterior.</div>
+      </div>
+      <div class="wcard" style="padding:12px 16px;width:170px"><div style="font-weight:800;font-size:13px;color:var(--laranja)">Abaixo de 50%</div><div style="font-size:11.5px;color:var(--dark)">perde o prêmio</div></div>
+      <div class="wcard" style="padding:12px 16px;width:170px"><div style="font-weight:800;font-size:13px;color:var(--azul)">50% a 89,99%</div><div style="font-size:11.5px;color:var(--dark)">valor proporcional</div></div>
+      <div class="wcard" style="padding:12px 16px;width:170px"><div style="font-weight:800;font-size:13px;color:var(--verde)">90% ou mais</div><div style="font-size:11.5px;color:var(--dark)">prêmio integral</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 6 — CAMPANHAS SUPERVISOR -->
+<section class="slide">
+  <div class="pad">
+    <div class="kicker">Supervisores</div>
+    <div class="h1">Aqui o jogo é MVP: média de vidas por promotor</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px">
+      <div class="card" style="padding:22px">
+        <div style="display:flex;gap:12px;align-items:flex-start"><div class="circ" style="width:44px;height:44px;background:var(--laranja);font-size:18px">1</div>
+          <div><div style="font-weight:800;color:var(--dark);font-size:16.5px">Semanal — Ranking MVP</div><div class="muted" style="font-size:12px">Top 2 supervisores no ranking semanal (seg a dom)</div></div></div>
+        <div class="wcard" style="margin-top:16px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:13.5px;color:var(--dark)">MVP 1º lugar</span><span class="big-b" style="font-size:20px">R$ 500</span></div>
+        <div class="wcard" style="margin-top:9px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:13.5px;color:var(--dark)">MVP 2º lugar</span><span class="big-b" style="font-size:20px">R$ 400</span></div>
+        <div class="muted" style="font-size:11.5px;font-style:italic;margin-top:12px">Quem vence não participa da Campanha 2 na mesma semana.</div>
+      </div>
+      <div class="card" style="padding:22px">
+        <div style="display:flex;gap:12px;align-items:flex-start"><div class="circ" style="width:44px;height:44px;background:var(--laranja);font-size:18px">2</div>
+          <div><div style="font-weight:800;color:var(--dark);font-size:16.5px">Semanal — Faixa de MVP</div><div class="muted" style="font-size:12px">Prêmio semanal pela média da equipe</div></div></div>
+        <div class="wcard" style="margin-top:16px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:13.5px;color:var(--dark)">MVP 20 a 24 vidas</span><span class="big-b" style="font-size:20px">R$ 400</span></div>
+        <div class="wcard" style="margin-top:9px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:13.5px;color:var(--dark)">MVP acima de 25</span><span class="big-b" style="font-size:20px">R$ 500</span></div>
+        <div class="muted" style="font-size:11.5px;font-style:italic;margin-top:12px">Valores unitários, pagos semanalmente.</div>
+      </div>
+      <div class="card" style="padding:22px">
+        <div style="display:flex;gap:12px;align-items:flex-start"><div class="circ" style="width:44px;height:44px;background:var(--laranja);font-size:18px">3</div>
+          <div><div style="font-weight:800;color:var(--dark);font-size:16.5px">Mensal — Meta Supervisor</div><div class="muted" style="font-size:12px">Adicional pela média de vidas no mês</div></div></div>
+        <div class="wcard" style="margin-top:16px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:13.5px;color:var(--dark)">MVP &gt; 60 vidas</span><span class="big-b" style="font-size:20px">R$ 300</span></div>
+        <div class="wcard" style="margin-top:9px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:13.5px;color:var(--dark)">MVP &gt; 80 vidas</span><span class="big-b" style="font-size:20px">R$ 400</span></div>
+        <div class="muted" style="font-size:11.5px;font-style:italic;margin-top:12px">Apuração pelas datas de cadastramento (vigência).</div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:20px;padding:20px 26px;display:flex;align-items:center;gap:20px">
+      <div class="circ" style="width:56px;height:56px;background:var(--azul);font-size:24px">Ø</div>
+      <div>
+        <div style="color:var(--dark);font-weight:800;font-size:16px">Como o MVP é calculado</div>
+        <div class="muted" style="font-size:13px;line-height:1.4;margin-top:4px">Média de vidas por promotor da equipe. Ficam fora do cálculo promotores com mais de 5 dias de férias no mês ou admitidos nos 2 meses anteriores à apuração. Desempate: nº de contratos → ranking do mês atual → ranking do mês anterior.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 7 — CAMPANHA PPO -->
+<section class="slide">
+  <div class="pad">
+    <div class="kicker">Campanha PPO</div>
+    <div class="h1">Vidas PPO valem adicional — e dobram a partir de 20</div>
+    <div style="display:grid;grid-template-columns:1.8fr 1fr;gap:32px;margin-top:24px">
+      <div>
+        <table class="tbl">
+          <tr><th style="text-align:left">Range total (HMO + PPO)</th><th>10 a 19 vidas PPO<br>valor por vida PPO</th><th>20+ vidas PPO<br>valor por vida PPO</th></tr>
+          <tr><td>De 10 a 29 vidas</td><td>R$ 5,00</td><td>R$ 10,00</td></tr>
+          <tr><td>De 30 a 49 vidas</td><td>R$ 10,00</td><td>R$ 20,00</td></tr>
+          <tr><td>De 50 a 59 vidas</td><td>R$ 12,50</td><td>R$ 25,00</td></tr>
+          <tr><td>De 60 a 79 vidas</td><td>R$ 15,00</td><td>R$ 30,00</td></tr>
+          <tr><td>De 80 a 99 vidas</td><td>R$ 17,50</td><td>R$ 35,00</td></tr>
+          <tr><td>A partir de 100 vidas</td><td>R$ 25,00</td><td>R$ 50,00</td></tr>
+        </table>
+        <div class="muted" style="font-size:14px;margin-top:16px">Com 20+ vidas PPO, o valor por vida <b class="big-o">dobra</b> em todas as faixas.</div>
+      </div>
+      <div>
+        <div class="ocard" style="padding:22px 26px">
+          <div class="kicker" style="font-size:12px">Elegibilidade</div>
+          <div style="font-size:15.5px;color:var(--dark);line-height:1.4;margin-top:8px">Mínimo de <b>10 vidas exclusivas PPO</b> implantadas em contratos SS e PME.</div>
+        </div>
+        <div class="ncard" style="padding:22px 26px;margin-top:18px">
+          <div class="kicker" style="font-size:12px">Por que PPO?</div>
+          <div style="font-size:14px;color:#fff;line-height:1.45;margin-top:8px">Produto com rede ampliada e possibilidade de reembolso fora da rede — ticket maior, adicional maior para você.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 8 — ESTRUTURA COMPLETA -->
+<section class="slide">
+  <div class="pad">
+    <div class="kicker">Estrutura completa</div>
+    <div class="h1">Toda a operação tem prêmio por meta mensal</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:24px">
+      <div class="card" style="padding:22px">
+        <div style="font-weight:800;color:var(--dark);font-size:18px">Gerência</div>
+        <div class="muted" style="font-size:12.5px;margin-top:4px">Meta mensal ≥ 100%</div>
+        <div class="big-b" style="font-size:36px;margin:12px 0">R$ 3.000</div>
+        <div class="muted" style="font-size:11.5px">Abaixo de 100%: sem premiação</div>
+      </div>
+      <div class="card" style="padding:22px">
+        <div style="font-weight:800;color:var(--dark);font-size:18px">Analistas</div>
+        <div class="muted" style="font-size:12.5px;margin-top:4px">Meta mensal ≥ 100%</div>
+        <div class="big-o" style="font-size:36px;margin:12px 0">R$ 1.000</div>
+        <div class="muted" style="font-size:11.5px">Abaixo de 100%: R$ 500</div>
+      </div>
+      <div class="card" style="padding:22px">
+        <div style="font-weight:800;color:var(--dark);font-size:18px">Apoios</div>
+        <div class="muted" style="font-size:12.5px;margin-top:4px">Por vida da equipe*</div>
+        <div class="big-b" style="font-size:36px;margin:12px 0">R$ 1,00</div>
+        <div class="muted" style="font-size:11.5px">Abaixo de 100% da meta: R$ 0,50 por vida</div>
+      </div>
+      <div class="card" style="padding:22px">
+        <div style="font-weight:800;color:var(--dark);font-size:18px">Executivos</div>
+        <div class="muted" style="font-size:12.5px;margin-top:4px">Meta mensal ≥ 100%</div>
+        <div class="big-o" style="font-size:36px;margin:12px 0">R$ 1.000</div>
+        <div class="muted" style="font-size:11.5px">Abaixo de 100%: sem premiação</div>
+      </div>
+    </div>
+    <div class="muted" style="font-size:11.5px;font-style:italic;margin-top:10px">*Apoios: valor calculado por vida da equipe correspondente.</div>
+    <div class="card" style="margin-top:16px;padding:20px 26px;display:flex;align-items:center;gap:20px">
+      <div class="circ" style="width:56px;height:56px;background:var(--azul);font-size:22px">♦</div>
+      <div style="flex:1">
+        <div style="color:var(--dark);font-weight:800;font-size:16px">Verba de Relacionamento</div>
+        <div class="muted" style="font-size:12.5px;margin-top:3px">Recursos para reconhecer e engajar as equipes no dia a dia.</div>
+      </div>
+      <div class="wcard" style="padding:14px 20px;width:230px"><div class="big-o" style="font-size:24px">R$ 1.000</div><div class="muted" style="font-size:11.5px">Verba administrativa, por gerência</div></div>
+      <div class="wcard" style="padding:14px 20px;width:230px"><div class="big-o" style="font-size:24px">R$ 5.000</div><div class="muted" style="font-size:11.5px">Ações internas para a operação</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 9 — PARCEIRAS -->
+<section class="slide">
+  <div class="pad">
+    <div class="kicker">Parceiras</div>
+    <div class="h1">Nacional, Nova Seg e Benve: R$ 50 por vida ao bater a meta</div>
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:32px;margin-top:24px">
+      <table class="tbl" style="align-self:start">
+        <tr><th style="text-align:left">Parceira</th><th>Meta ABR</th><th>Meta MAI</th><th>Meta JUN</th><th>Valor por vida</th></tr>
+        <tr><td>Nacional</td><td>850</td><td>880</td><td>910</td><td>R$ 50,00</td></tr>
+        <tr><td>Nova Seg</td><td>700</td><td>730</td><td>760</td><td>R$ 50,00</td></tr>
+        <tr><td>Benve</td><td>400</td><td>450</td><td>600</td><td>R$ 50,00</td></tr>
+      </table>
+      <div class="ocard" style="padding:24px 28px">
+        <div class="big-o" style="font-size:46px">R$ 50</div>
+        <div style="font-size:14px;color:var(--dark);line-height:1.35;margin-top:6px">por vida implantada ao atingir a meta do mês</div>
+      </div>
+    </div>
+    <div class="ncard" style="margin-top:14px;padding:22px 28px;display:flex;align-items:center;gap:20px">
+      <div class="circ" style="width:56px;height:56px;background:var(--laranja);font-size:26px">+</div>
+      <div>
+        <div style="color:#fff;font-weight:800;font-size:16.5px">E tem mais: Plus Parceiras</div>
+        <div style="color:var(--ice);font-size:13px;line-height:1.4;margin-top:4px">Promotores das parceiras que atingirem suas metas individuais também participam da Campanha Plus, na coluna de promotores externos.</div>
+      </div>
+    </div>
+    <div class="muted" style="font-size:13.5px;font-style:italic;margin-top:18px">Metas crescem mês a mês — planeje o ritmo da equipe desde a primeira semana.</div>
+  </div>
+</section>
+
+<!-- SLIDE 10 — CAMPANHA ESTRELAS -->
+<section class="slide">
+  <div class="pad">
+    <div class="kicker">Campanha trimestral</div>
+    <div class="h1">Campanha Estrelas — a maratona que paga até R$ 5 mil</div>
+    <div class="muted" style="font-size:13.5px;margin-top:8px">Apuração trimestral. Válida para promotores, supervisores e gerentes HapON ativos na companhia no momento da apuração final.</div>
+    <div style="display:grid;grid-template-columns:1.25fr 1fr;gap:36px;margin-top:20px">
+      <div>
+        <div class="tbl-cap">★ &nbsp;PROMOTOR — vidas no trimestre</div>
+        <table class="tbl">
+          <tr><th style="text-align:left">Faixa de vidas</th><th>Meta individual</th><th>Meta do grupo</th></tr>
+          <tr><td>150 a 209 vidas</td><td>R$ 350,00</td><td>R$ 700,00</td></tr>
+          <tr><td>210 a 269 vidas</td><td>R$ 1.400,00</td><td>R$ 2.000,00</td></tr>
+          <tr><td>270 a 359 vidas</td><td>R$ 2.100,00</td><td>R$ 3.000,00</td></tr>
+          <tr><td>360+ vidas</td><td>R$ 3.600,00</td><td>R$ 5.000,00</td></tr>
+        </table>
+        <div class="ocard" style="padding:16px 22px;margin-top:16px">
+          <div style="font-size:13.5px;color:var(--dark);line-height:1.4"><b>Duas formas de premiar o promotor:</b> valores por meta individual atingida e valores maiores quando o grupo atinge a meta — na faixa máxima, R$ 5.000 no trimestre.</div>
+        </div>
+      </div>
+      <div>
+        <div class="tbl-cap">★ &nbsp;SUPERVISOR — % da meta do trimestre</div>
+        <table class="tbl">
+          <tr><th style="text-align:left">Faixa da meta</th><th>Premiação</th></tr>
+          <tr><td>70% a 79%</td><td>R$ 1.000,00</td></tr>
+          <tr><td>80% a 99%</td><td>R$ 2.000,00</td></tr>
+          <tr><td>100% ou mais</td><td>R$ 3.000,00</td></tr>
+        </table>
+        <div class="ncard" style="padding:20px 26px;margin-top:16px">
+          <div class="kicker" style="font-size:12px">★ &nbsp;Gerente</div>
+          <div style="color:#fff;font-weight:800;font-size:36px;margin:4px 0">R$ 5.000</div>
+          <div style="color:var(--ice);font-size:13px">Ao superar 80% da meta do trimestre</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 11 — GOVERNANÇA -->
+<section class="slide navy">
+  <div style="position:absolute;right:-70px;top:-90px;width:290px;height:290px;border-radius:50%;background:var(--azul)"></div>
+  <div style="position:absolute;right:-30px;top:110px;width:140px;height:140px;border-radius:50%;background:var(--laranja)"></div>
+  <div class="pad" style="position:relative">
+    <div class="kicker">Governança e vigência</div>
+    <div class="h1" style="color:#fff">Do ranking ao pagamento, sem surpresa</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:28px">
+      <div class="n2card" style="padding:22px">
+        <div class="circ" style="width:42px;height:42px;background:var(--laranja);font-size:16px">1</div>
+        <div style="color:#fff;font-weight:800;font-size:15.5px;margin:14px 0 8px">Comercial Venda Direta</div>
+        <div style="color:var(--ice);font-size:12px;line-height:1.4">Vende, orienta o cliente e levanta as informações por promotor</div>
+      </div>
+      <div class="n2card" style="padding:22px">
+        <div class="circ" style="width:42px;height:42px;background:var(--laranja);font-size:16px">2</div>
+        <div style="color:#fff;font-weight:800;font-size:15.5px;margin:14px 0 8px">Governança Comercial</div>
+        <div style="color:var(--ice);font-size:12px;line-height:1.4">Valida, apura resultados e consolida o ranking de vendas</div>
+      </div>
+      <div class="n2card" style="padding:22px">
+        <div class="circ" style="width:42px;height:42px;background:var(--laranja);font-size:16px">3</div>
+        <div style="color:#fff;font-weight:800;font-size:15.5px;margin:14px 0 8px">Central de Comissões</div>
+        <div style="color:var(--ice);font-size:12px;line-height:1.4">Calcula as comissões devidas sobre a base validada</div>
+      </div>
+      <div class="n2card" style="padding:22px">
+        <div class="circ" style="width:42px;height:42px;background:var(--laranja);font-size:16px">4</div>
+        <div style="color:#fff;font-weight:800;font-size:15.5px;margin:14px 0 8px">RH / Inovah</div>
+        <div style="color:var(--ice);font-size:12px;line-height:1.4">Processa os pagamentos: comissões em folha, campanhas via Inovah</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:18px;margin-top:22px">
+      <div class="n2card" style="padding:22px 28px">
+        <div class="kicker" style="font-size:12px">Vigência</div>
+        <div style="color:#fff;font-weight:800;font-size:17px;margin:6px 0">Validade trimestral com renovação automática</div>
+        <div style="color:var(--ice);font-size:12.5px;line-height:1.4">caso não haja nova divulgação até 30 dias antes do novo trimestre. Cada campanha se renova pelo seu ciclo (semanal, mensal ou trimestral) até nova normativa publicada.</div>
+      </div>
+      <div style="background:var(--laranja);border-radius:14px;padding:22px 28px">
+        <div style="color:#fff;font-weight:800;font-size:26px">Bora pra cima!</div>
+        <div style="color:#fff;font-size:13.5px;margin-top:6px">Cada vida implantada conta. Boas vendas, time HapON!</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div></div>
+
+<div id="nav">
+  <button onclick="go(-1)" aria-label="Anterior">‹</button>
+  <div id="counter">1 / 11</div>
+  <button onclick="go(1)" aria-label="Próximo">›</button>
+</div>
+
+<script>
+  // gate
+  var KEY='campanhas_hapon_auth';
+  function checkGate(){
+    var v=document.getElementById('gate-input').value;
+    if(btoa(v)==='aGFwdmlkYTEyMzQ='){sessionStorage.setItem(KEY,'1');document.getElementById('gate').style.display='none';}
+    else{document.getElementById('gate-err').textContent='Senha incorreta.';}
+  }
+  if(sessionStorage.getItem(KEY)==='1')document.getElementById('gate').style.display='none';
+
+  // slides
+  var slides=document.querySelectorAll('.slide'), cur=0;
+  function show(i){
+    cur=Math.max(0,Math.min(slides.length-1,i));
+    slides.forEach(function(s,j){s.classList.toggle('on',j===cur);});
+    document.getElementById('counter').textContent=(cur+1)+' / '+slides.length;
+  }
+  function go(d){show(cur+d);}
+  document.addEventListener('keydown',function(e){
+    if(document.getElementById('gate').style.display!=='none')return;
+    if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' ')go(1);
+    if(e.key==='ArrowLeft'||e.key==='PageUp')go(-1);
+    if(e.key==='Home')show(0);
+    if(e.key==='End')show(slides.length-1);
+  });
+  // touch swipe
+  var tx=null;
+  document.addEventListener('touchstart',function(e){tx=e.touches[0].clientX;});
+  document.addEventListener('touchend',function(e){
+    if(tx===null)return;
+    var dx=e.changedTouches[0].clientX-tx;
+    if(Math.abs(dx)>50)go(dx<0?1:-1);
+    tx=null;
+  });
+  // scaling
+  function fit(){
+    var s=Math.min(window.innerWidth/1280,(window.innerHeight-40)/720);
+    document.getElementById('stage').style.transform='scale('+s+')';
+  }
+  window.addEventListener('resize',fit);fit();
+</script>
+</body>
+</html>
